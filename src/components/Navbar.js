@@ -1,12 +1,21 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-const Navbar = ({icon, title}) => {
+const Navbar = ({ icon, title }) => {
   return (
-    <nav className="nav bg-primary">
+    <nav className="navbar bg-primary">
       <h1>
         <i className={icon}></i>
         {title}
       </h1>
+      <ul>
+        <li>
+          <Link className="link" to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/about">About</Link>
+        </li>
+      </ul>
     </nav>
   );
 };

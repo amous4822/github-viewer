@@ -1,21 +1,25 @@
-import React, { Component } from "react";
+import React from "react";
+import { Spinner } from "../components/Spinner";
 import UserItem from "./UserItem";
 
-export default class User extends Component {
-  render() {
-    console.log(this.props);
+const User = ({ users, loading }) => {
+  if (loading) {
+    return <Spinner />;
+  } else {
     return (
       <div style={userStyle}>
-        {this.props.users.map((user) => {
+        {users.map((user) => {
           return <UserItem key={user.id} user={user} />;
         })}
       </div>
     );
   }
-}
+};
 
 const userStyle = {
   display: "grid",
   gridTemplateColumns: "repeat(3, 1fr)",
   gridGap: "1rem",
 };
+
+export default User;
