@@ -1,15 +1,16 @@
-import React, { Component, Fragment } from "react";
+import React, { useEffect, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Repos } from "./Repos";
 import { Spinner } from "../components/Spinner";
 
-export class UserData extends Component {
-  componentDidMount() {
-    this.props.getUser(this.props.match.params.login);
-    this.props.userDataRepos(this.props.match.params.login);
-  }
+const UserData = ({userData, getUser, userDataRepos, match, userRepos, loading }) => {
 
-  render() {
+  useEffect(() => {
+    getUser(match.params.login);
+    userDataRepos(match.params.login);
+    //eslint-disable-next-line
+  },[])
+
     const {
       name,
       company,
@@ -24,10 +25,7 @@ export class UserData extends Component {
       public_repos,
       public_gists,
       hireable,
-    } = this.props.userData;
-
-    const { userRepos, loading } = this.props;
-    // console.log(userRepos);
+    } = userData;
 
     if (loading) return <Spinner />;
 
@@ -99,7 +97,6 @@ export class UserData extends Component {
         <Repos repos={userRepos} />
       </Fragment>
     );
-  }
 }
 
 export default UserData;

@@ -1,67 +1,73 @@
-import React, { Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import "./App.css";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import User from "./user/User";
-import { Search } from "./user/Search";
+import Search from "./user/Search";
 import Alert from "./user/Alert";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import About from "./pages/About";
 import UserData from "./user/UserData";
 
-class App extends React.Component {
-  state = {
-    users: [],
-    user: [],
-    repos: [],
-    loading: false,
-    msg: "",
-    alertType: "",
-  };
+const App = () => {
 
-  searchUsers = async (user) => {
-    this.setState({ loading: true });
+  const [users, setUsers] = useState([])
+  const [user, setUser] = useState([])
+  const [repos, setRepos] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [msg, setMsg] = useState("")
+  const [alertType, setAlertType] = useState("")
+
+
+  const searchUsers = async (user) => {
+
+    setLoading(true)
 
     const res = await axios.get(
       `https://api.github.com/search/users?q=${user}&client_id=${process.env.REACT_APP_CLIENT_ID}&client_secret=${process.env.REACT_APP_CLIENT_SECRET}`
     );
-    this.setState({ users: res.data.items, loading: false });
+
+    setLoading(false)
+    setUsers(res.data.items)
   };
 
-  getUser = async (username) => {
-    this.setState({ loading: true });
+  const getUser = async (username) => {
+    
+    setLoading(true)
 
     const res = await axios.get(
       `https://api.github.com/users/${username}?client_id=${process.env.REACT_APP_CLIENT_ID}&client_secret=${process.env.REACT_APP_CLIENT_SECRET}`
     );
-    this.setState({ user: res.data, loading: false });
+    
+    setUser(res.data)
+    setLoading(false)
   };
 
-  getUserRepos = async (username) => {
-    this.setState({ loading: true });
+  const getUserRepos = async (username) => {
+    
+    setLoading(true)
 
     const res = await axios.get(
       `https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${process.env.REACT_APP_CLIENT_ID}&client_secret=${process.env.REACT_APP_CLIENT_SECRET}`
     );
 
-    
-    this.setState({ repos: res.data, loading: false });
+    setRepos(res.data)
+    setLoading(false)
   };
 
-  clearSearch = () => {
-    this.setState({ users: [] });
+  const clearSearch = () => {
+    setUsers([])
   };
 
-  sendAlert = (msg, alertType) => {
-    // console.log(msg, type);
-    this.setState({
-      msg,
-      alertType,
-    });
+  const sendAlert = (msg, alertType) => {
+
+    setMsg(msg)
+    setAlertType(alertType)
 
     setTimeout(() => {
-      this.setState({ msg: null, alertType: null });
-    }, 3000);
+      setMsg(null)
+    setAlertType(null)
+    }, 2000);
   };
 
   /**
@@ -72,8 +78,6 @@ class App extends React.Component {
    * one example
    */
 
-  render() {
-    const { users, user, repos, loading, msg, alertType } = this.state;
 
     return (
       <Router>
@@ -88,10 +92,10 @@ class App extends React.Component {
                 render={(props) => (
                   <Fragment>
                     <Search
-                      searchUsers={this.searchUsers}
-                      clearSearch={this.clearSearch}
+                      searchUsers={searchUsers}
+                      clearSearch={clearSearch}
                       showClear={users.length > 0}
-                      sendAlert={this.sendAlert}
+                      sendAlert={sendAlert}
                     />
                     <User loading={loading} users={users} />
                   </Fragment>
@@ -104,9 +108,9 @@ class App extends React.Component {
                 render={(props) => (
                   <UserData
                     {...props}
-                    getUser={this.getUser}
+                    getUser={getUser}
                     userData={user}
-                    userDataRepos={this.getUserRepos}
+                    userDataRepos={getUserRepos}
                     userRepos={repos}
                     loading={loading}
                   />
@@ -117,7 +121,6 @@ class App extends React.Component {
         </div>
       </Router>
     );
-  }
 }
 
 export default App;
