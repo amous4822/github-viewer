@@ -1,13 +1,18 @@
-import React, { useEffect, Fragment } from "react";
+import React, { useEffect, Fragment, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Repos } from "./Repos";
 import { Spinner } from "../components/Spinner";
+import GithubContext from "../context/github/githubContext";
 
-const UserData = ({userData, getUser, userDataRepos, match, userRepos, loading }) => {
+const UserData = ({ match }) => {
+
+  const githubContext = useContext(GithubContext)
+
+  const { user ,getUser, getUserRepos, repos, loading } = githubContext
 
   useEffect(() => {
     getUser(match.params.login);
-    userDataRepos(match.params.login);
+    getUserRepos(match.params.login);
     //eslint-disable-next-line
   },[])
 
@@ -25,7 +30,7 @@ const UserData = ({userData, getUser, userDataRepos, match, userRepos, loading }
       public_repos,
       public_gists,
       hireable,
-    } = userData;
+    } = user;
 
     if (loading) return <Spinner />;
 
@@ -94,7 +99,7 @@ const UserData = ({userData, getUser, userDataRepos, match, userRepos, loading }
           <div className="badge badge-light">Public Repos: {public_repos}</div>
           <div className="badge badge-dark">Public Gists: {public_gists}</div>
         </div>
-        <Repos repos={userRepos} />
+        <Repos repos={repos} />
       </Fragment>
     );
 }

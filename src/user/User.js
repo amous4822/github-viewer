@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Spinner } from "../components/Spinner";
+import GithubContext from "../context/github/githubContext";
 import UserItem from "./UserItem";
 
-const User = ({ users, loading }) => {
+const User = () => {
+  const githubContext = useContext(GithubContext);
+
+  const { users, loading } = githubContext;
+
   if (loading) {
     return <Spinner />;
   } else {
